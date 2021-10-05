@@ -1,4 +1,5 @@
 import pprint
+from tabulate import tabulate
 
 """
 Account_name: XRP Wallet
@@ -59,14 +60,14 @@ def main(file):
                 notes_array.append(line.strip("Notes:"))
             if 'Instantly_exchanged' in line: 
                 instantly_exchanged_array.append(line.strip("Instantly_exchanged:"))
-            if 'Transfer_total' in line: 
+            if 'Transfer_total:' in line: 
                 transfer_total_array.append(line.strip("Transfer_total:"))
-            if 'Transfer_total_currency' in line: 
+            if 'Transfer_total_currency:' in line: 
                 transfer_total_currency_array.append(line.strip("Transfer_total_currency:"))
             if 'Transfer_total_fee' in line:
                 transfer_total_fee_array.append(line.strip("Transfer_total_fee:"))
             if 'Transfer_fee_currency' in line:
-                transfer_total_fee_array.append(line.strip("Transfer_fee_currency:"))
+                transfer_fee_currency_array.append(line.strip("Transfer_fee_currency:"))
             if 'Transfer_payment_method' in line:
                 transfer_payment_method_array.append(line.strip("Transfer_payment_method:"))
             if 'Transfer_id' in line: 
@@ -80,13 +81,26 @@ def main(file):
                     if len(item) < base_length:
                         item.append("")
                 next_transaction = False
-            
-        # for a, b, c, d, e, f, g in zip(account_name_array, timestamp_array, amount_array, currency_array, notes_array,
-        #     transfer_total_array, transfer_total_fee_array):
-        #     print(a, b, c, d, e, f, g)   
-        for a, b, c in zip(account_name_array, timestamp_array, notes_array):
-            print(a, b, c)
 
+        #removed notes and payment method to improve readability 
+        #'Notes': notes_array, 'Transfer_payment_method': transfer_payment_method_array,
+        transactions_table = {
+            'Account_name': account_name_array,
+            'Timestamp': timestamp_array,
+            'Balance': balance_array,
+            'Amount': amount_array,
+            'Currency': currency_array,            
+
+            'Transfer_total': transfer_total_array,
+            'Transfer_total_currency': transfer_total_currency_array,
+            'Transfer_total_fee': transfer_total_fee_array,
+            'Transfer_fee_currency': transfer_fee_currency_array,
+            
+        }
+
+        print(tabulate(transactions_table, headers='keys'))
+
+        
         
 if __name__ == "__main__":
     coinbase_data_extract = open(r"./coinbase_data.txt","r+")
