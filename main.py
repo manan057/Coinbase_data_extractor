@@ -20,7 +20,7 @@ def main(file):
     contents = [] 
     with file as data_file:
         contents = data_file.readlines()
-        count = 0
+        next_transaction = False
         account_name_array = []
         timestamp_array = []
         balance_array = []
@@ -41,47 +41,52 @@ def main(file):
             transfer_total_currency_array, transfer_total_fee_array, transfer_fee_currency_array,
             transfer_payment_method_array, transfer_id_array, coinbase_id_array]
         for line in contents:
+            if '----------' in line:
+                next_transaction = True
             if 'Account_name' in line:
-                account_name_array.append(line.strip(":"))
+                account_name_array.append(line.strip("Account_name:"))
             if 'Timestamp' in line: 
-                timestamp_array.append(line.strip(":"))
+                timestamp_array.append(line.strip("Timestamp:"))
             if 'Balance' in line: 
-                balance_array.append(line.strip(":"))
+                balance_array.append(line.strip("Balance:"))
             if 'Amount' in line: 
-                amount_array.append(line.strip(":"))
+                amount_array.append(line.strip("Amount:"))
             if 'Currency' in line: 
-                currency_array.append(line.strip(":"))
+                currency_array.append(line.strip("Currency:"))
             if 'To' in line: 
-                to_array.append(line.strip(":"))
+                to_array.append(line.strip("To:"))
             if 'Notes' in line: 
-                notes_array.append(line.strip(":"))
+                notes_array.append(line.strip("Notes:"))
             if 'Instantly_exchanged' in line: 
-                instantly_exchanged_array.append(line.strip(":"))
+                instantly_exchanged_array.append(line.strip("Instantly_exchanged:"))
             if 'Transfer_total' in line: 
-                transfer_total_array.append(line.strip(":"))
+                transfer_total_array.append(line.strip("Transfer_total:"))
             if 'Transfer_total_currency' in line: 
-                transfer_total_currency_array.append(line.strip(":"))
+                transfer_total_currency_array.append(line.strip("Transfer_total_currency:"))
             if 'Transfer_total_fee' in line:
-                transfer_total_fee_array.append(line.strip(":"))
+                transfer_total_fee_array.append(line.strip("Transfer_total_fee:"))
             if 'Transfer_fee_currency' in line:
-                transfer_total_fee_array.append(line.strip(":"))
+                transfer_total_fee_array.append(line.strip("Transfer_fee_currency:"))
             if 'Transfer_payment_method' in line:
-                transfer_payment_method_array.append(line.strip(":"))
+                transfer_payment_method_array.append(line.strip("Transfer_payment_method:"))
             if 'Transfer_id' in line: 
-                transfer_id_array.append(line.strip(":"))
+                transfer_id_array.append(line.strip("Transfer_id:"))
             if 'Coinbase_id' in line: 
-                coinbase_id_array.append(line.strip(":"))
+                coinbase_id_array.append(line.strip("Coinbase_id:"))
             
-            for item in array_of_variables:
-                base_length = len(account_name_array)
-                if len(item) < base_length:
-                    item.append("")
+            if next_transaction:
+                for item in array_of_variables:
+                    base_length = len(account_name_array)
+                    if len(item) < base_length:
+                        item.append("")
+                next_transaction = False
+            
+        # for a, b, c, d, e, f, g in zip(account_name_array, timestamp_array, amount_array, currency_array, notes_array,
+        #     transfer_total_array, transfer_total_fee_array):
+        #     print(a, b, c, d, e, f, g)   
+        for a, b, c in zip(account_name_array, timestamp_array, notes_array):
+            print(a, b, c)
 
-        for a, b, c, d, e, f, g in zip(account_name_array, timestamp_array, amount_array, currency_array, notes_array,
-            transfer_total_array, transfer_total_fee_array):
-            print(a, b, c, d, e, f, g)
-
-        print()    
         
 if __name__ == "__main__":
     coinbase_data_extract = open(r"./coinbase_data.txt","r+")
