@@ -1,5 +1,4 @@
-import pprint
-from tabulate import tabulate
+import pandas as pd
 
 """
 Account_name: XRP Wallet
@@ -18,7 +17,7 @@ Transfer_id: 12345abc
 Coinbase_id: 1234565abc
 """
 def main(file):
-    contents = [] 
+    contents = []
     with file as data_file:
         contents = data_file.readlines()
         next_transaction = False
@@ -41,7 +40,6 @@ def main(file):
             currency_array, to_array, notes_array, instantly_exchanged_array, transfer_total_array, 
             transfer_total_currency_array, transfer_total_fee_array, transfer_fee_currency_array,
             transfer_payment_method_array, transfer_id_array, coinbase_id_array]
-
         for line in contents:
             if '----------' in line:
                 next_transaction = True
@@ -83,23 +81,22 @@ def main(file):
                         item.append("")
                 next_transaction = False
 
-        #removed notes and payment method to improve readability 
-        #'Notes': notes_array, || 'Transfer_payment_method': transfer_payment_method_array,
         transactions_table = {
             'Account_name': account_name_array,
             'Timestamp': timestamp_array,
             'Balance': balance_array,
             'Amount': amount_array,
             'Currency': currency_array,            
-
+            'Notes': notes_array,
+            'Instantly_exchanged': instantly_exchanged_array,
             'Transfer_total': transfer_total_array,
             'Transfer_total_currency': transfer_total_currency_array,
             'Transfer_total_fee': transfer_total_fee_array,
             'Transfer_fee_currency': transfer_fee_currency_array,
-            
+            'Transfer_payment_method': transfer_payment_method_array
         }
-        print(tabulate(transactions_table, headers='keys', tablefmt='fancy_grid', showindex=True))
-
+        transactions_df = pd.DataFrame(transactions_table)
+        transactions_df.to_csv('transactions.csv')
         
         
 if __name__ == "__main__":

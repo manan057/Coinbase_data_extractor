@@ -130,3 +130,4 @@ dmypy.json
 
 # Data file
 coinbase_data.txt
+transactions.csv
